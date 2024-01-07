@@ -1,0 +1,6 @@
+TOKEN = "6616537692:AAGgVH7FymgJsDhFW6hPYcHQIZlpbCYl3pE"
+DB_USERNAME = "postgres"
+DB_PASSWORD = "postgres"
+DB_HOST = "77.246.101.74"
+DB_PORT = "5432"
+DB_NAME = "the_club"
