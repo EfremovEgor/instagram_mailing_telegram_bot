@@ -25,8 +25,8 @@ bot = Bot(token=config.TOKEN, parse_mode="HTML")
 #     await notify_admins_of_unread_messages()
 
 
-async def notify_admins_of_unread_messages():
-    async with get_session() as session:
+async def notify_admins_of_unread_messages(db):
+    async with db() as session:
         query = await session.execute(select(models.Admin))
 
         admins = query.scalars().all()
@@ -57,11 +57,14 @@ async def notify_admins_of_unread_messages():
     await asyncio.gather(*tasks)
 
 
-def schedule_tasks():
+async def schedule_tasks():
+    db = async_session_generator()
+
     scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
     scheduler.add_job(
         notify_admins_of_unread_messages,
         trigger="interval",
+        kwargs={"db": db},
         seconds=60,
         max_instances=1,
     )
@@ -70,7 +73,7 @@ def schedule_tasks():
 
 
 async def main() -> None:
-    schedule_tasks()
+    await schedule_tasks()
     dp = Dispatcher()
     dp.update.middleware(DbSessionMiddleware(session_pool=async_session_generator()))
     dp.callback_query.middleware(CallbackAnswerMiddleware())
