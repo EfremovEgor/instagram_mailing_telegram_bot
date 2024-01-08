@@ -42,6 +42,7 @@ class Worker(Base):
     name = Column(String, nullable=False, unique=True)
     account_name = Column(String, nullable=False)
     account_password = Column(String, nullable=False)
+    daily_limit = Column(Integer, nullable=True)
 
 
 class Admin(Base):
